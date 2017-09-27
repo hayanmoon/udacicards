@@ -1,21 +1,21 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 
-class Deck extends Component {
-    static navigationOptions = {
-        tabBarLabel: 'Decks'
-    }
+class DeckItem extends Component {
     render(){
         return(
-            <View style={[styles.container,{borderBottomColor:"black", borderBottomWidth:.5}]}>
-                <Text style={{fontSize:20}}>Deck title</Text>
-                <Text stlye={{fontSize:10}}>Deck card number</Text>
-            </View>
+            <TouchableOpacity onPress={()=>this.props.onPress()}>
+                <View style={[styles.container,{borderBottomColor:"black", borderBottomWidth:.5}]}>
+                    <Text style={{fontSize:20}}>Deck title</Text>
+                    <Text stlye={{fontSize:10}}>Deck card number</Text>
+                </View> 
+            </TouchableOpacity>
+            
         )
     }
 }
 
-export default Deck
+export default DeckItem
 
 
 const styles = StyleSheet.create({
