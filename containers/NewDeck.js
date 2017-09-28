@@ -6,6 +6,8 @@ import {
   StyleSheet,
   TouchableOpacity
 } from 'react-native'
+import { connect } from 'react-redux'
+import { addDeck } from '../actions'
 import { saveDeckTitle } from '../utils/helpers'
 
 class NewDeck extends Component {
@@ -18,7 +20,9 @@ class NewDeck extends Component {
   }
 
   addDeck = () => {
-    saveDeckTitle(this.state.text)
+    saveDeckTitle(this.state.text).then((data)=>{
+      this.props.dispatch(addDeck(data))
+    })
     this.setState({text:''})
     this.props.navigation.goBack()
   }
@@ -49,7 +53,7 @@ class NewDeck extends Component {
   }
 }
 
-export default NewDeck
+export default connect()(NewDeck)
 
 const styles = StyleSheet.create({
   container: {

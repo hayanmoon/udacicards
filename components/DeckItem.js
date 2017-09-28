@@ -6,8 +6,8 @@ class DeckItem extends Component {
         return(
             <TouchableOpacity onPress={()=>this.props.onPress()}>
                 <View style={[styles.container,{borderBottomColor:"black", borderBottomWidth:.5}]}>
-                    <Text style={{fontSize:20}}>Deck title</Text>
-                    <Text stlye={{fontSize:10}}>Deck card number</Text>
+                    <Text style={{fontSize:20}}>{this.props.deck.title}</Text>
+                    <Text stlye={{fontSize:10}}>{this.props.deck.questions ? this.props.questions.length : 0 }</Text>
                 </View> 
             </TouchableOpacity>
             

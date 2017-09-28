@@ -12,7 +12,6 @@ class DeckList extends Component {
 
   componentDidMount() {
     getDecks().then(data => {
-      console.log(data)
       this.props.dispatch({ type: RECEIVE_DECKS, decks: data })
     })
   }
@@ -25,7 +24,7 @@ class DeckList extends Component {
     const { decks } = this.props
     return (
       <View style={styles.container}>
-        {decks.length < 1 ? (
+        {decks === null ? (
           <Text>No Decks Available</Text>
         ) : (
           <FlatList
@@ -35,6 +34,7 @@ class DeckList extends Component {
             renderItem={({ item }) => (
               <DeckItem
                 key={item.title}
+                deck={item}
                 onPress={() => this.selectDeck(item)}
               />
             )}
@@ -47,6 +47,7 @@ class DeckList extends Component {
 }
 
 function mapStateToProps({ decks }) {
+  console.log(decks)
   return {
     decks
   }
