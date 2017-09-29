@@ -1,55 +1,78 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity, Button } from 'react-native'
+import { connect } from 'react-redux'
 
 class Deck extends Component {
-  static navigationOptions = {
-    title: 'udacicards',
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.state.params.deck
+    }
   }
 
   render() {
-    const { deck } = this.props.navigation.state.params
+    const { deck } = this.props
     return (
       <View style={styles.container}>
-        <View>
-          <Text style={{ fontSize: 20 }}>{deck.title}</Text>
-          <Text stlye={{ fontSize: 10 }}>Deck card number</Text>
+        <View style={[{ flex: 1, padding: 40 }, styles.center]}>
+          <Text style={styles.title}>{deck.title}</Text>
+          <Text style={[styles.subtitle]}>{`${deck.questions
+            .length} cards`}</Text>
         </View>
-        <TouchableOpacity>
-          <View>
+        <View style={[{ flex: 1 }, styles.center]}>
+          <TouchableOpacity
+            style={[styles.btn, styles.addBtn]}
+            onPress={() =>
+              this.props.navigation.navigate('AddCard', { deck: deck.title })}>
             <Text>Add Card</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View>
-            <Text>Start Quiz</Text>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.btn, styles.startBtn]}>
+            <Text style={{ color: 'white' }}>Start Quiz</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
 }
 
-export default Deck
+function mapStateToProps(state) {
+  const { decks, selectedDeck } = state
+  return {
+    deck: decks[selectedDeck]
+  }
+}
+
+export default connect(mapStateToProps)(Deck)
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // borderRadius: 16,
-    padding: 40,
-    // marginLeft:10,
-    // marginRight:10,
-    marginTop: 17,
+    padding: 40
+  },
+  center: {
     justifyContent: 'center',
     alignItems: 'center'
-    // shadowRadius:3,
-    // shadowOpacity: 0.8,
-    // shadowColor: 'black',
-    // shadowOffset:{
-    //     width:0,
-    //     height:3
-    // }
   },
   title: {
-    fontSize: 20
+    fontSize: 40
+  },
+  subtitle: {
+    fontSize: 20,
+    color: 'gray',
+    marginTop: 10
+  },
+  btn: {
+    marginBottom: 5,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 50,
+    paddingRight: 50,
+    borderWidth: 1,
+    borderRadius: 5
+  },
+  addBtn: {
+    borderColor: 'gray'
+  },
+  startBtn: {
+    backgroundColor: 'black'
   }
 })

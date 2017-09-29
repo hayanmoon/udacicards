@@ -7,6 +7,7 @@ import { TabNavigator, StackNavigator } from 'react-navigation'
 import DeckList from './containers/DeckList'
 import NewDeck from './containers/NewDeck'
 import Deck from './containers/Deck'
+import AddCard from './containers/AddCard'
 import { Constants } from 'expo'
 
 const store = createStore(reducer)
@@ -33,6 +34,9 @@ const MainNavigator = StackNavigator({
   },
   Deck: {
     screen: Deck
+  },
+  AddCard: {
+    screen: AddCard
   }
 })
 

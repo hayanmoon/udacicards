@@ -4,7 +4,8 @@ import {
   View,
   TextInput,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  KeyboardAvoidingView
 } from 'react-native'
 import { connect } from 'react-redux'
 import { addDeck } from '../actions'
@@ -15,6 +16,9 @@ class NewDeck extends Component {
     tabBarLabel: 'New Deck'
   }
 
+  componentWillUnmount(){
+    this.setState({title:''})
+  }
   state = {
     text: ''
   }
@@ -27,16 +31,17 @@ class NewDeck extends Component {
     this.props.navigation.goBack()
   }
 
+
   render() {
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView   behavior='padding' style={styles.container}>
         <Text style={{ fontSize: 50, textAlign: 'center', marginBottom: 50 }}>
           What is the title of your new deck?
         </Text>
-        <View style={[{ flexDirection: 'row' }, styles.input]}>
+        <View  style={[{ flexDirection: 'row' }, styles.input]}>
           <TextInput
             style={{
-              borderBottomColor: 'black',
+              borderBottomColor: 'gray',
               borderBottomWidth: 1,
               flex: 1
             }}
@@ -45,10 +50,10 @@ class NewDeck extends Component {
             value={this.state.text}
           />
         </View>
-        <TouchableOpacity style={styles.button} onPress={this.addDeck}>
+        <TouchableOpacity style={[styles.button,{marginBottom:10}]} onPress={this.addDeck}>
           <Text style={{ color: 'white' }}>Submit</Text>
         </TouchableOpacity>
-      </View>
+      </KeyboardAvoidingView>
     )
   }
 }
@@ -63,7 +68,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: 'black',
     borderRadius: 5,
     height: 50,
     padding: 5,
