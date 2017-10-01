@@ -12,6 +12,7 @@ class DeckList extends Component {
 
   componentDidMount() {
     getDecks().then(data => {
+      console.log(data)
       this.props.dispatch({ type: RECEIVE_DECKS, decks: data })
     })
   }

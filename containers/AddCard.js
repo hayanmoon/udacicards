@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 import { addCard } from '../actions'
 import { connect } from 'react-redux'
+import { addCardToDeck } from '../utils/helpers'
 
 class AddCard extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -18,10 +19,15 @@ class AddCard extends Component {
     answer: ''
   }
   addCard = () => {
+    const title =  this.props.navigation.state.params.deck
+    const card =  { ...this.state }
+    
     this.props.dispatch(
-      addCard(this.props.navigation.state.params.deck, { ...this.state })
+      addCard(title, card)
     )
-    this.props.navigation.goBack()
+    addCardToDeck(title,card).then(()=>{
+      this.props.navigation.goBack()
+    })
   }
   render() {
     return (
