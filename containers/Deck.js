@@ -15,18 +15,21 @@ class Deck extends Component {
       <View style={styles.container}>
         <View style={[{ flex: 1, padding: 40 }, styles.center]}>
           <Text style={styles.title}>{deck.title}</Text>
-          <Text style={[styles.subtitle]}>{`${deck.questions
-            .length} cards`}</Text>
+          <Text style={[styles.subtitle]}>{`${deck.questions.length} cards`}</Text>
         </View>
         <View style={[{ flex: 1 }, styles.center]}>
           <TouchableOpacity
             style={[styles.btn, styles.addBtn]}
             onPress={() =>
               this.props.navigation.navigate('AddCard', { deck: deck.title })}>
-            <Text>Add Card</Text>
+            <Text style={{textAlign:'center'}}>Add Card</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.btn, styles.startBtn]}>
-            <Text style={{ color: 'white' }}>Start Quiz</Text>
+          <TouchableOpacity 
+            style={[styles.btn, styles.startBtn]} 
+            onPress={()=>{
+              this.props.navigation.navigate('Quiz')
+            }}>
+            <Text style={{ color: 'white',textAlign:'center' }}>Start Quiz</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -67,7 +70,9 @@ const styles = StyleSheet.create({
     paddingLeft: 50,
     paddingRight: 50,
     borderWidth: 1,
-    borderRadius: 5
+    borderRadius: 5,
+    width:180,
+
   },
   addBtn: {
     borderColor: 'gray'

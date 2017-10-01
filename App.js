@@ -8,6 +8,7 @@ import DeckList from './containers/DeckList'
 import NewDeck from './containers/NewDeck'
 import Deck from './containers/Deck'
 import AddCard from './containers/AddCard'
+import StartQuiz from './containers/StartQuiz'
 import { Constants } from 'expo'
 
 const store = createStore(reducer)
@@ -37,6 +38,9 @@ const MainNavigator = StackNavigator({
   },
   AddCard: {
     screen: AddCard
+  },
+  Quiz: {
+    screen:StartQuiz
   }
 })
 

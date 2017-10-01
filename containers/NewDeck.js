@@ -26,7 +26,7 @@ class NewDeck extends Component {
   addDeck = () => {
     saveDeckTitle(this.state.text).then((data)=>{
       this.props.dispatch(addDeck(data))
-    })
+    }).catch((e)=> console.log('error save to deck',e))
     this.setState({text:''})
     this.props.navigation.goBack()
   }
