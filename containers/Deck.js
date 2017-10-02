@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, TouchableOpacity, Button } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity, Button, Alert } from 'react-native'
 import { connect } from 'react-redux'
 
 class Deck extends Component {
@@ -9,26 +9,35 @@ class Deck extends Component {
     }
   }
 
+  addCard = (deck) =>{
+    this.props.navigation.navigate('AddCard', { deck })
+  }
+
+  startQuiz = ()=>{
+    if(this.props.deck.questions.length > 0){
+      this.props.navigation.navigate('Quiz')
+    }else{
+      Alert.alert('No Cards','Please add a card to start the quiz')
+    }
+  }
+  
   render() {
-    const { deck } = this.props
+    const { title, questions } = this.props.deck
     return (
       <View style={styles.container}>
         <View style={[{ flex: 1, padding: 40 }, styles.center]}>
-          <Text style={styles.title}>{deck.title}</Text>
-          <Text style={[styles.subtitle]}>{`${deck.questions.length} cards`}</Text>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={[styles.subtitle]}>{`${questions.length} cards`}</Text>
         </View>
         <View style={[{ flex: 1 }, styles.center]}>
           <TouchableOpacity
             style={[styles.btn, styles.addBtn]}
-            onPress={() =>
-              this.props.navigation.navigate('AddCard', { deck: deck.title })}>
+            onPress={()=>this.addCard(title)}>
             <Text style={{textAlign:'center'}}>Add Card</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={[styles.btn, styles.startBtn]} 
-            onPress={()=>{
-              this.props.navigation.navigate('Quiz')
-            }}>
+            onPress={this.startQuiz}>
             <Text style={{ color: 'white',textAlign:'center' }}>Start Quiz</Text>
           </TouchableOpacity>
         </View>
