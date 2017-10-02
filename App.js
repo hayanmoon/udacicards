@@ -46,16 +46,18 @@ const MainNavigator = StackNavigator({
   Score:{
     screen: Score
   }
-})
+},{
+  navigationOptions: {
+    gesturesEnabled: false
+  }
+} )
 
 export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
         <View style={{ flex: 1 }}>
-          <View style={{ height: Constants.statusBarHeight }}>
-            <StatusBar translucent barStyle="dark-content" />
-          </View>
+          <StatusBar translucent barStyle="dark-content" />
           <MainNavigator />
         </View>
       </Provider>

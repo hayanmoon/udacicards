@@ -13,7 +13,8 @@ class StartQuiz extends Component {
     animatedValue: new Animated.Value(0),
     opacity: new Animated.Value(0),
     questionIndex: 0,
-    score: 0
+    score: 0,
+    key: this.props.navigation.state.key
   }
 
   flipCard = () => {
@@ -38,7 +39,7 @@ class StartQuiz extends Component {
     this.state.animatedValue.setValue(0)
     this.state.opacity.setValue(0)
     if(currentIndex === this.props.deck.questions.length){
-      this.props.navigation.navigate('Score',{score:score})
+      this.props.navigation.navigate('Score',{score, key:this.state.key})
       return
     }
     

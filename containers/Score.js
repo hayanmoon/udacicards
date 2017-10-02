@@ -1,24 +1,55 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity} from 'react-native'
+import { NavigationActions } from 'react-navigation'
+import { connect } from 'react-redux'
+
 class Score extends Component {
+    static navigationOptions = {
+        headerLeft: null,
+        title: 'Score'
+    }
+
+    backToDeck = () => {
+        this.props.navigation.dispatch(NavigationActions.back({
+            key: this.props.navigation.state.params.key
+        }))
+    }
+
+    restartQuiz = () =>{
+        this.props.navigation.dispatch(NavigationActions.reset({
+            index: 2,
+            actions:[
+                NavigationActions.navigate({routeName:'Main'}),
+                NavigationActions.navigate({routeName:'Deck',params:{deck:this.props.deck.title}}),
+                NavigationActions.navigate({routeName:'Quiz'}),
+
+            ]
+        }))
+    }
     render(){
-        console.log(this.props)
         return(
                <View style={styles.container}>
                    <Text style={styles.title}>Your score</Text>
                    <Text style={styles.title}>{this.props.navigation.state.params.score}</Text>
-                   <TouchableOpacity>
+                   <TouchableOpacity onPress={this.restartQuiz}>
                        <Text>Restart Quiz</Text>
                    </TouchableOpacity>
-                   <TouchableOpacity>
-                       <Text>Retrun To Menu</Text>
+                   <TouchableOpacity onPress={this.backToDeck}>
+                       <Text>Back to Deck</Text>
                    </TouchableOpacity>
                </View>
         )
     }
 }
 
-export default Score
+function mapStateToProps(state) {
+    const { decks, selectedDeck } = state
+    return {
+      deck: decks[selectedDeck]
+    }
+  }
+
+export default connect(mapStateToProps)(Score)
 
 
 const styles = StyleSheet.create({
