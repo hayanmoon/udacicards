@@ -11,16 +11,28 @@ import AddCard from './containers/AddCard'
 import StartQuiz from './containers/StartQuiz'
 import Score from './containers/Score'
 import { Constants } from 'expo'
+import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons'
 
 const store = createStore(reducer)
 
 const Tabs = TabNavigator(
   {
     DeckList: {
-      screen: DeckList
+      screen: DeckList,
+      navigationOptions:{
+        tabBarIcon: ({tintColor}) => (
+          <MaterialCommunityIcons name='cards' style={{fontSize:30}}/>
+        )
+      }
     },
     NewDecks: {
-      screen: NewDeck
+      screen: NewDeck,
+      navigationOptions:{
+        tabBarIcon: ({tintColor}) => (
+          <Entypo name="plus" style={{fontSize:30}}/>
+        )
+      }
+      
     }
   },
   {
@@ -31,7 +43,7 @@ const Tabs = TabNavigator(
 )
 
 const MainNavigator = StackNavigator({
-  Main: {
+  Decks: {
     screen: Tabs
   },
   Deck: {

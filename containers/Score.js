@@ -19,7 +19,7 @@ class Score extends Component {
         this.props.navigation.dispatch(NavigationActions.reset({
             index: 2,
             actions:[
-                NavigationActions.navigate({routeName:'Main'}),
+                NavigationActions.navigate({routeName:'Decks'}),
                 NavigationActions.navigate({routeName:'Deck',params:{deck:this.props.deck.title}}),
                 NavigationActions.navigate({routeName:'Quiz'}),
 
