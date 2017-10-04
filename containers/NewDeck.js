@@ -8,8 +8,10 @@ import {
   KeyboardAvoidingView
 } from 'react-native'
 import { connect } from 'react-redux'
-import { addDeck } from '../actions'
+import { addDeck, selectDeck } from '../actions'
 import { saveDeckTitle } from '../utils/helpers'
+import { Entypo } from '@expo/vector-icons'
+
 
 class NewDeck extends Component {
   static navigationOptions = {
@@ -28,7 +30,7 @@ class NewDeck extends Component {
       this.props.dispatch(addDeck(data))
     }).catch((e)=> console.log('error save to deck',e))
     this.setState({text:''})
-    this.props.navigation.goBack()
+    this.props.navigation.navigate('Deck', { deck: this.state.text })
   }
 
 

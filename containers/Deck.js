@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, Button, Alert } from 'react-native'
 import { connect } from 'react-redux'
+import { getDeck } from '../utils/helpers'
 
 class Deck extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -8,9 +9,27 @@ class Deck extends Component {
       title: navigation.state.params.deck
     }
   }
+  state = {
+    deck :{
+      title:'',
+      questions:[]
+    }
+  }
+
+  componentDidMount(){
+    getDeck(this.props.navigation.state.params.deck).then(deck => {
+      this.setState({deck})
+    })    
+  }
+
+  refreshOnGoBack(){
+    getDeck(this.props.navigation.state.params.deck).then(deck => {
+      this.setState({deck})
+    }) 
+  }
 
   addCard = (deck) =>{
-    this.props.navigation.navigate('AddCard', { deck })
+    this.props.navigation.navigate('AddCard', { deck, update: () => this.refreshOnGoBack() })
   }
 
   startQuiz = ()=>{
@@ -22,7 +41,7 @@ class Deck extends Component {
   }
   
   render() {
-    const { title, questions } = this.props.deck
+    const { title, questions } = this.state.deck
     return (
       <View style={styles.container}>
         <View style={[{ flex: 1, padding: 40 }, styles.center]}>
@@ -46,14 +65,7 @@ class Deck extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  const { decks, selectedDeck } = state
-  return {
-    deck: decks[selectedDeck]
-  }
-}
-
-export default connect(mapStateToProps)(Deck)
+export default connect()(Deck)
 
 const styles = StyleSheet.create({
   container: {

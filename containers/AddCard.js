@@ -26,6 +26,7 @@ class AddCard extends Component {
       addCard(title, card)
     )
     addCardToDeck(title,card).then(()=>{
+      this.props.navigation.state.params.update()
       this.props.navigation.goBack()
     }).catch(()=> console.log('error add card to deck'))
   }
