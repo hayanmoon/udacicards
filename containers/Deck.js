@@ -1,49 +1,52 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, TouchableOpacity, Button, Alert } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity, Button, Alert, Animated, Easing } from 'react-native'
 import { connect } from 'react-redux'
 import { getDeck } from '../utils/helpers'
+import { Notifications, Permissions } from 'expo'
 
 class Deck extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.state.params.deck
+      title: 'Deck'
     }
   }
   state = {
     deck :{
       title:'',
       questions:[]
-    }
+    },
+    position: new Animated.Value(200)
   }
 
   componentDidMount(){
-    getDeck(this.props.navigation.state.params.deck).then(deck => {
+    Animated.timing(this.state.position,{toValue:0, duration:500}).start()
+    getDeck(this.props.navigation.state.params.title).then(deck => {
       this.setState({deck})
     })    
   }
 
   refreshOnGoBack(){
-    getDeck(this.props.navigation.state.params.deck).then(deck => {
+    getDeck(this.props.navigation.state.params.title).then(deck => {
       this.setState({deck})
     }) 
   }
 
-  addCard = (deck) =>{
-    this.props.navigation.navigate('AddCard', { deck, update: () => this.refreshOnGoBack() })
-  }
+  addCard = (title) =>{
+    this.props.navigation.navigate('AddCard', { title, update: () => this.refreshOnGoBack() })
+   }
 
-  startQuiz = ()=>{
-    if(this.props.deck.questions.length > 0){
-      this.props.navigation.navigate('Quiz')
+  startQuiz = (title) =>{
+    if(this.state.deck.questions.length > 0){
+      this.props.navigation.navigate('Quiz', {title})
     }else{
       Alert.alert('No Cards','Please add a card to start the quiz')
     }
   }
   
   render() {
-    const { title, questions } = this.state.deck
+    const { title, questions, position } = this.state.deck
     return (
-      <View style={styles.container}>
+      <Animated.View style={[styles.container,{left:this.state.position}]}>
         <View style={[{ flex: 1, padding: 40 }, styles.center]}>
           <Text style={styles.title}>{title}</Text>
           <Text style={[styles.subtitle]}>{`${questions.length} cards`}</Text>
@@ -56,11 +59,11 @@ class Deck extends Component {
           </TouchableOpacity>
           <TouchableOpacity 
             style={[styles.btn, styles.startBtn]} 
-            onPress={this.startQuiz}>
+            onPress={() => this.startQuiz(title)}>
             <Text style={{ color: 'white',textAlign:'center' }}>Start Quiz</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </Animated.View>
     )
   }
 }
@@ -77,7 +80,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   title: {
-    fontSize: 40
+    fontSize: 40,
   },
   subtitle: {
     fontSize: 20,

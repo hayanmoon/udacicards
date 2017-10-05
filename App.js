@@ -12,6 +12,7 @@ import StartQuiz from './containers/StartQuiz'
 import Score from './containers/Score'
 import { Constants } from 'expo'
 import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons'
+import { setLocalNotification } from './utils/helpers'
 
 const store = createStore(reducer)
 
@@ -58,13 +59,12 @@ const MainNavigator = StackNavigator({
   Score:{
     screen: Score
   }
-},{
-  navigationOptions: {
-    gesturesEnabled: false
-  }
-} )
+})
 
 export default class App extends React.Component {
+  componentDidMount(){
+    setLocalNotification()
+  }
   render() {
     return (
       <Provider store={store}>

@@ -26,11 +26,12 @@ class NewDeck extends Component {
   }
 
   addDeck = () => {
-    saveDeckTitle(this.state.text).then((data)=>{
+    const { text } = this.state
+    saveDeckTitle(text).then((data)=>{
       this.props.dispatch(addDeck(data))
+      this.props.navigation.navigate('Deck', { title: text })
     }).catch((e)=> console.log('error save to deck',e))
     this.setState({text:''})
-    this.props.navigation.navigate('Deck', { deck: this.state.text })
   }
 
 
@@ -66,7 +67,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    padding:10
   },
   input: {
     borderWidth: 1,

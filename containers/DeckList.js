@@ -20,7 +20,7 @@ class DeckList extends Component {
 
   selectDeck = ({title}) => {
     this.props.dispatch(selectDeck(title))
-    this.props.navigation.navigate('Deck', { deck: title })
+    this.props.navigation.navigate('Deck', { title })
   }
 
   render() {

@@ -7,65 +7,83 @@ import {
   Animated
 } from 'react-native'
 import { connect } from 'react-redux'
+import { getDeck } from '../utils/helpers'
 
 class StartQuiz extends Component {
+  static navigationOptions = {
+    title: 'Quiz'
+  }
   state = {
     animatedValue: new Animated.Value(0),
     opacity: new Animated.Value(0),
     questionIndex: 0,
     score: 0,
-    key: this.props.navigation.state.key
+    key: this.props.navigation.state.key,
+    questions: []
+  }
+
+  componentDidMount() {
+    getDeck(this.props.navigation.state.params.title)
+      .then(deck => {
+        this.setState({ questions: deck.questions })
+      })
+      .catch(e => {
+        console.log('error fetch')
+      })
   }
 
   flipCard = () => {
-    if (this.state.animatedValue._value >= 90) {
-      Animated.spring(this.state.animatedValue, {
-        toValue: 0,
-        friction: 8,
-        tension: 3
-      }).start()
-    } else {
       Animated.spring(this.state.animatedValue, {
         toValue: 180,
         friction: 8,
         tension: 3
       }).start()
-    }
   }
 
-  correct = () =>{
-    const score = this.state.score+1
+  correct = () => {
+    const score = this.state.score + 1
     const currentIndex = this.state.questionIndex + 1
     this.state.animatedValue.setValue(0)
     this.state.opacity.setValue(0)
-    if(currentIndex === this.props.deck.questions.length){
-      this.props.navigation.navigate('Score',{score, key:this.state.key})
+    if (currentIndex === this.state.questions.length) {
+      this.props.navigation.navigate('Score', { score, key: this.state.key })
       return
     }
-    
+
     this.setState({
       questionIndex: currentIndex,
       score
     })
-
   }
 
-  incorrect = () =>{
+  incorrect = () => {
+    const currentIndex = this.state.questionIndex + 1
+    this.state.animatedValue.setValue(0)
+    this.state.opacity.setValue(0)
+    if (currentIndex === this.state.questions.length) {
+      this.props.navigation.navigate('Score', {
+        score: this.state.score,
+        key: this.state.key
+      })
+      return
+    }
     this.setState({
-      questionIndex: this.state.questionIndex + 1
+      questionIndex: currentIndex
     })
   }
 
   render() {
-    Animated.timing(this.state.opacity, {toValue:1,duration:1000}).start()
-    const { title, questions } = this.props.deck
-    const {question, answer} = questions[this.state.questionIndex]
-    const frontInterpolate = this.state.animatedValue.interpolate({
+    Animated.timing(this.state.opacity, { toValue: 1, duration: 1000 }).start()
+    const { questions, questionIndex, animatedValue, opacity } = this.state
+
+    const { question, answer } =
+      questions.length > 0 ? questions[questionIndex] : {}
+    const frontInterpolate = animatedValue.interpolate({
       inputRange: [0, 180],
       outputRange: ['0deg', '180deg']
     })
 
-    const backInterpolate = this.state.animatedValue.interpolate({
+    const backInterpolate = animatedValue.interpolate({
       inputRange: [0, 180],
       outputRange: ['180deg', '360deg']
     })
@@ -73,7 +91,8 @@ class StartQuiz extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.counter}>
-          <Text style={{ fontSize: 20 }}>{`${this.state.questionIndex+1}/${questions.length}`}</Text>
+          <Text style={{ fontSize: 20 }}>{`${questionIndex +
+            1}/${questions.length}`}</Text>
         </View>
         <View style={styles.details}>
           <View
@@ -81,7 +100,7 @@ class StartQuiz extends Component {
               styles.container,
               { justifyContent: 'center', alignItems: 'center' }
             ]}>
-            <Animated.View style={{opacity:this.state.opacity}}>
+            <Animated.View style={{ opacity: opacity, alignItems: 'center' }}>
               <Animated.View
                 style={[
                   styles.flipCard,
@@ -89,7 +108,10 @@ class StartQuiz extends Component {
                     transform: [{ rotateY: frontInterpolate }]
                   }
                 ]}>
-                <Text style={{fontSize:30, textAlign:'center'}}> {`${question}?`} </Text>
+                <Text style={styles.title}>
+                  {`${question ? question : ''}?`}
+                </Text>
+                <Text style={styles.subtitle}>Question</Text>
               </Animated.View>
               <Animated.View
                 style={[
@@ -99,31 +121,31 @@ class StartQuiz extends Component {
                   styles.flipCard,
                   styles.flipCardBack
                 ]}>
-                <Text style={{fontSize:30}}>Answer</Text>
-                <Text style={{fontSize:30}}>{answer}</Text>
+                <Text style={styles.title}>{answer ? answer : ''}</Text>
+                <Text style={styles.subtitle}>Answer</Text>
               </Animated.View>
             </Animated.View>
+          </View>
+          <TouchableOpacity onPress={this.flipCard}>
+            <Text>Show Answer</Text>
+          </TouchableOpacity>
+        </View>
 
-            <TouchableOpacity onPress={this.flipCard}>
-              <Text>Flip!</Text>
-            </TouchableOpacity>
-          </View>
-          <View
-            style={[
-              styles.container,
-              { justifyContent: 'center', alignItems: 'center' }
-            ]}>
-            <TouchableOpacity
-              style={[styles.btn, { backgroundColor: 'green' }]}
-              onPress={this.correct}>
-              <Text style={styles.text}>Correct</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.btn, { backgroundColor: 'red' }]}
-              onPress={this.incorrect}>
-              <Text style={styles.text}>Incorrect</Text>
-            </TouchableOpacity>
-          </View>
+        <View
+          style={[
+            styles.container,
+            { justifyContent: 'center', alignItems: 'center' }
+          ]}>
+          <TouchableOpacity
+            style={[styles.btn, { backgroundColor: 'green' }]}
+            onPress={this.correct}>
+            <Text style={styles.text}>Correct</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.btn, { backgroundColor: 'red' }]}
+            onPress={this.incorrect}>
+            <Text style={styles.text}>Incorrect</Text>
+          </TouchableOpacity>
         </View>
       </View>
     )
@@ -159,8 +181,6 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   flipCard: {
-    width: 200,
-    height: 200,
     alignItems: 'center',
     justifyContent: 'center',
     backfaceVisibility: 'hidden'
@@ -168,14 +188,17 @@ const styles = StyleSheet.create({
   flipCardBack: {
     position: 'absolute',
     top: 0
+  },
+  title: {
+    fontSize: 40,
+    textAlign: 'center'
+  },
+  subtitle: {
+    fontSize: 20,
+    color: 'red',
+    fontWeight: 'bold',
+    marginTop: 10
   }
 })
 
-function mapStateToProps(state) {
-  const { decks, selectedDeck } = state
-  return {
-    deck: decks[selectedDeck]
-  }
-}
-
-export default connect(mapStateToProps)(StartQuiz)
+export default StartQuiz

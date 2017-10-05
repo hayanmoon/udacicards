@@ -12,14 +12,15 @@ import { addCardToDeck } from '../utils/helpers'
 
 class AddCard extends Component {
   static navigationOptions = ({ navigation }) => ({
-    title: 'Add Card'
+    title: 'Add Card',
+    gestureEnabled:true
   })
   state = {
     question: '',
     answer: ''
   }
   addCard = () => {
-    const title =  this.props.navigation.state.params.deck
+    const title =  this.props.navigation.state.params.title
     const card =  { ...this.state }
     
     this.props.dispatch(
@@ -58,7 +59,7 @@ class AddCard extends Component {
           />
         </View>
         <TouchableOpacity style={[styles.button]} onPress={this.addCard}>
-          <Text style={{ color: 'white' }}>Submit</Text>
+          <Text style={{ color: 'white', textAlign:'center' }}>Submit</Text>
         </TouchableOpacity>
       </View>
     )
@@ -90,6 +91,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     backgroundColor: 'black',
     borderRadius: 5,
-    borderWidth: 1
+    borderWidth: 1,
+    width:180
   }
 })
