@@ -59,7 +59,7 @@ export function setLocalNotification () {
                 let tomorrow = new Date()
                 tomorrow.setDate(tomorrow.getDate()+1)
                 tomorrow.setHours(12)
-                tomorrow.setMintutes(45)
+                tomorrow.setMinutes(45)
                 Notifications.scheduleLocalNotificationsAsync(
                   createNotification(),
                   {
