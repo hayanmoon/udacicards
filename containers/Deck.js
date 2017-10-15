@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, Button, Alert, Animated, Easing } from 'react-native'
-import { connect } from 'react-redux'
 import { getDeck } from '../utils/helpers'
 import { Notifications, Permissions } from 'expo'
 
@@ -68,7 +67,7 @@ class Deck extends Component {
   }
 }
 
-export default connect()(Deck)
+export default Deck
 
 const styles = StyleSheet.create({
   container: {

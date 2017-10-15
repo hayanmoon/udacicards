@@ -9,7 +9,7 @@ import {
   Platform
 } from 'react-native'
 import { connect } from 'react-redux'
-import { addDeck, selectDeck } from '../actions'
+import { addDeck } from '../actions'
 import { saveDeckTitle } from '../utils/helpers'
 import { Entypo } from '@expo/vector-icons'
 
@@ -29,7 +29,7 @@ class NewDeck extends Component {
   addDeck = () => {
     const { text } = this.state
     saveDeckTitle(text).then((data)=>{
-      this.props.dispatch(addDeck(data))
+      this.props.addDeck(data)
       this.props.navigation.navigate('Deck', { title: text })
     }).catch((e)=> console.log('error save to deck',e))
     this.setState({text:''})
@@ -62,7 +62,7 @@ class NewDeck extends Component {
   }
 }
 
-export default connect()(NewDeck)
+export default connect(null, {addDeck})(NewDeck)
 
 const styles = StyleSheet.create({
   container: {

@@ -20,20 +20,10 @@ export default DeckItem
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        // borderRadius: 16,
         padding:40,
-        // marginLeft:10,
-        // marginRight:10,
         marginTop:17,
         justifyContent:'center',
         alignItems:'center'
-        // shadowRadius:3,
-        // shadowOpacity: 0.8,
-        // shadowColor: 'black',
-        // shadowOffset:{
-        //     width:0,
-        //     height:3
-        // }
     },
     title:{
         fontSize:20,
