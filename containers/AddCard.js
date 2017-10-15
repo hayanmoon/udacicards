@@ -4,7 +4,8 @@ import {
   View,
   StyleSheet,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform
 } from 'react-native'
 import { addCard } from '../actions'
 import { connect } from 'react-redux'
@@ -32,15 +33,16 @@ class AddCard extends Component {
     }).catch(()=> console.log('error add card to deck'))
   }
   render() {
+    const border = Platform.OS === 'ios' ? {borderBottomColor: 'gray',
+    borderBottomWidth: 1,
+   }: {}
     return (
       <View style={styles.container}>
         <View style={[{ flexDirection: 'row' }, styles.input]}>
           <TextInput
-            style={{
-              borderBottomColor: 'gray',
-              borderBottomWidth: 1,
+            style={[border,{
               flex: 1
-            }}
+            }]}
             placeholder="Question?"
             onChangeText={question => this.setState({ question })}
             value={this.state.question}
@@ -48,11 +50,9 @@ class AddCard extends Component {
         </View>
         <View style={[{ flexDirection: 'row' }, styles.input]}>
           <TextInput
-            style={{
-              borderBottomColor: 'gray',
-              borderBottomWidth: 1,
+            style={[border,{
               flex: 1
-            }}
+            }]}
             placeholder="Answer"
             onChangeText={answer => this.setState({ answer })}
             value={this.state.answer}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, StatusBar } from 'react-native'
+import { StyleSheet, Text, View, StatusBar, Platform } from 'react-native'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import reducer from './reducers'
@@ -69,7 +69,14 @@ export default class App extends React.Component {
     return (
       <Provider store={store}>
         <View style={{ flex: 1 }}>
+        {
+          Platform.OS === 'ios' ? 
           <StatusBar translucent barStyle="dark-content" />
+          : <View style={{height:Constants.statusBarHeight}}>
+              <StatusBar translucent barStyle="dark-content" /> 
+            </View>
+        }
+          
           <MainNavigator />
         </View>
       </Provider>

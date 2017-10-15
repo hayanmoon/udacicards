@@ -5,7 +5,8 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native'
 import { connect } from 'react-redux'
 import { addDeck, selectDeck } from '../actions'
@@ -43,11 +44,11 @@ class NewDeck extends Component {
         </Text>
         <View  style={[{ flexDirection: 'row' }, styles.input]}>
           <TextInput
-            style={{
-              borderBottomColor: 'gray',
+            style={[Platform.OS === 'ios' ? {borderBottomColor: 'gray',
               borderBottomWidth: 1,
-              flex: 1
-            }}
+             }: {},{
+               flex: 1
+            }]}
             placeholder="Deck Title"
             onChangeText={text => this.setState({ text })}
             value={this.state.text}
