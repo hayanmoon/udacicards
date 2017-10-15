@@ -4,7 +4,8 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
-  Animated
+  Animated,
+  Platform
 } from 'react-native'
 import { connect } from 'react-redux'
 import { getDeck } from '../utils/helpers'
@@ -16,6 +17,7 @@ class StartQuiz extends Component {
   state = {
     animatedValue: new Animated.Value(0),
     opacity: new Animated.Value(0),
+    animatedOpacity: new Animated.Value(1),
     questionIndex: 0,
     score: 0,
     key: this.props.navigation.state.key,
@@ -25,7 +27,8 @@ class StartQuiz extends Component {
   componentDidMount() {
     getDeck(this.props.navigation.state.params.title)
       .then(deck => {
-        this.setState({ questions: deck.questions })
+        const { title, questions } = deck
+        this.setState({ questions, title })
       })
       .catch(e => {
         console.log('error fetch')
@@ -33,11 +36,16 @@ class StartQuiz extends Component {
   }
 
   flipCard = () => {
+    if(Platform.OS === 'ios'){
       Animated.spring(this.state.animatedValue, {
         toValue: 180,
         friction: 8,
         tension: 3
       }).start()
+    }else{
+      Animated.timing(this.state.animatedOpacity,{ toValue:0, duration:500}).start()
+    }
+      
   }
 
   correct = () => {
@@ -45,8 +53,13 @@ class StartQuiz extends Component {
     const currentIndex = this.state.questionIndex + 1
     this.state.animatedValue.setValue(0)
     this.state.opacity.setValue(0)
+    this.state.animatedOpacity.setValue(1)
     if (currentIndex === this.state.questions.length) {
-      this.props.navigation.navigate('Score', { score, key: this.state.key })
+      this.props.navigation.navigate('Score', { 
+        score,
+        key: this.state.key,
+        title: this.state.title 
+      })
       return
     }
 
@@ -60,10 +73,12 @@ class StartQuiz extends Component {
     const currentIndex = this.state.questionIndex + 1
     this.state.animatedValue.setValue(0)
     this.state.opacity.setValue(0)
+    this.state.animatedOpacity.setValue(1)
     if (currentIndex === this.state.questions.length) {
       this.props.navigation.navigate('Score', {
         score: this.state.score,
-        key: this.state.key
+        key: this.state.key,
+        title: this.state.title
       })
       return
     }
@@ -74,25 +89,55 @@ class StartQuiz extends Component {
 
   render() {
     Animated.timing(this.state.opacity, { toValue: 1, duration: 1000 }).start()
-    const { questions, questionIndex, animatedValue, opacity } = this.state
+    const { questions, questionIndex, animatedValue, opacity, animatedOpacity } = this.state
 
     const { question, answer } =
       questions.length > 0 ? questions[questionIndex] : {}
-    const frontInterpolate = animatedValue.interpolate({
-      inputRange: [0, 180],
-      outputRange: ['0deg', '180deg']
-    })
 
-    const backInterpolate = animatedValue.interpolate({
-      inputRange: [0, 180],
-      outputRange: ['180deg', '360deg']
-    })
+    let animatedFrontStyle = null
+    let animatedBackStyle = null
+
+    if(Platform.OS == 'ios'){
+      const frontInterpolate = animatedValue.interpolate({
+        inputRange: [0, 180],
+        outputRange: ['0deg', '180deg']
+      })
+  
+      const backInterpolate = animatedValue.interpolate({
+        inputRange: [0, 180],
+        outputRange: ['180deg', '360deg']
+      })
+      animatedFrontStyle = {
+        transform: [{ rotateY: frontInterpolate }]
+      }
+      animatedBackStyle =  {
+        transform: [{ rotateY: backInterpolate }]
+      }
+    }else{
+      const frontInterpolate = animatedOpacity.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 1]
+      })
+  
+      const backInterpolate = animatedOpacity.interpolate({
+        inputRange: [0, 1],
+        outputRange: [1, 0]
+      })
+      animatedFrontStyle = {
+        opacity: frontInterpolate
+      }
+      animatedBackStyle =  {
+        opacity:  backInterpolate
+      }
+    }
+
 
     return (
       <View style={styles.container}>
         <View style={styles.counter}>
-          <Text style={{ fontSize: 20 }}>{`${questionIndex +
-            1}/${questions.length}`}</Text>
+          <Text style={{ fontSize: 20 }}>
+            {`${questionIndex +1}/${questions.length}`}
+          </Text>
         </View>
         <View style={styles.details}>
           <View
@@ -104,9 +149,7 @@ class StartQuiz extends Component {
               <Animated.View
                 style={[
                   styles.flipCard,
-                  {
-                    transform: [{ rotateY: frontInterpolate }]
-                  }
+                  animatedFrontStyle
                 ]}>
                 <Text style={styles.title}>
                   {`${question ? question : ''}?`}
@@ -115,9 +158,7 @@ class StartQuiz extends Component {
               </Animated.View>
               <Animated.View
                 style={[
-                  {
-                    transform: [{ rotateY: backInterpolate }]
-                  },
+                  animatedBackStyle,
                   styles.flipCard,
                   styles.flipCardBack
                 ]}>
