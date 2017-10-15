@@ -24,7 +24,7 @@ class Score extends Component {
   }
 
   restartQuiz = () => {
-    const { title } = this.props.deck
+    const { title } = this.props.navigation.state.params
     this.props.navigation.dispatch(
       NavigationActions.reset({
         index: 2,
